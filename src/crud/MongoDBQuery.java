@@ -2,16 +2,20 @@ package crud;
 
 import org.bson.Document;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.QueryOperators;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
-/** * @date 创建时间：2016年9月14日 上午11:35:38 
- * @version 1.0 * @parameter 
- * @since 
- * @return  
+/**
+ * * @date 创建时间：2016年9月14日 上午11:35:38
+ * 
+ * @version 1.0 * @parameter
+ * @since
+ * @return
  */
 public class MongoDBQuery {
 	public static void main(String[] args) {
@@ -27,20 +31,24 @@ public class MongoDBQuery {
 			} catch (Exception e) {
 				System.out.println("集合已存在");
 			}
-			MongoCollection<Document> collection = mongoDatabase.getCollection("col");
+			MongoCollection<Document> collection = mongoDatabase
+					.getCollection("col");
 			System.out.println("集合 test 选择成功");
-			 //检索所有文档  
-	         /** 
-	         * 1. 获取迭代器FindIterable<Document> 
-	         * 2. 获取游标MongoCursor<Document> 
-	         * 3. 通过游标遍历检索出的文档集合 
-	         * */  
-	         FindIterable<Document> findIterable = collection.find();  
-	         MongoCursor<Document> mongoCursor = findIterable.iterator();  
-	         while(mongoCursor.hasNext()){  
-	            System.out.println(mongoCursor.next());  
-	         }  
-	         mongoClient.close();
+			// 检索所有文档
+			/**
+			 * 1. 获取迭代器FindIterable<Document> 2. 获取游标MongoCursor<Document> 3.
+			 * 通过游标遍历检索出的文档集合
+			 * */
+			BasicDBObject queryObject = new BasicDBObject();
+			queryObject = new BasicDBObject().append("title", new BasicDBObject(
+					QueryOperators.EXISTS, new String[] {"java"}));
+//			FindIterable<Document> findIterable = collection.find();
+			FindIterable<Document> findIterable = collection.find(queryObject);
+			MongoCursor<Document> mongoCursor = findIterable.iterator();
+			while (mongoCursor.hasNext()) {
+				System.out.println(mongoCursor.next());
+			}
+			mongoClient.close();
 		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
